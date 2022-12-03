@@ -28,6 +28,8 @@ with open('/Users/evgeny/python/workbook/data/advent2022/advent_03.txt','r') as 
                 sc = ord(item) - ord('A') + 27
             score = score + sc
             i = 0
-            group = [] 
+            group = []
+
+# second answer
 print(score)
 
