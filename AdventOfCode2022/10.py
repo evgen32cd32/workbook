@@ -14,7 +14,13 @@ class CPUCRT:
         self.cycle = self.cycle + 1
         if self.cycle == self.checkpoint:
             self.firstAns = self.firstAns + self.x * self.checkpoint
-            self.checkpoint = self.checkpoint +40
+            self.checkpoint = self.checkpoint + 40
+    
+    def addX(self, x):
+        self.x = self.x + x
+    
+    def __str__(self):
+        return '\n'.join([''.join(l) for l in self.screen])
 
 with open('/Users/evgeny/python/workbook/data/advent2022/advent_10.txt','r') as f:
     dev = CPUCRT()
@@ -23,12 +29,11 @@ with open('/Users/evgeny/python/workbook/data/advent2022/advent_10.txt','r') as 
         dev.process()
         if splitted[0] == 'addx':
             dev.process()
-            dev.x = dev.x + int(splitted[1])
+            dev.addX(int(splitted[1]))
         
 
 # first answer
 print(dev.firstAns)
 
 # second answer
-for l in dev.screen:
-    print(''.join(l))
+print(dev)
