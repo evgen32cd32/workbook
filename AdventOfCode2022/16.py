@@ -59,34 +59,38 @@ printAfteOpen()
 
 def maxPressure(valvesLeft, workers):
     workers.sort(key=lambda x: x[0])
-    w = workers.pop()
-    steps = w[0]
-    #if steps < 0:
-    #    return 0, []
-    mp = 0
-    mv = None
-    mstack = []
-    for valve in valvesLeft:
-        ns = steps - valveDict[w[1]].stepsToNevs[valve] - 1
-        if ns <= 0:
-            continue
-        vl = valvesLeft.copy()
-        vl.remove(valve)
-        nv = valveDict[valve]
-        nw = workers.copy()
-        nw.append((ns,valve))
-        a, stack = maxPressure(vl, nw)
-        p = nv.rate * ns + a
-        if p > mp:
-            mp = p
-            mv = valve
-            mstack = stack
-    if mv is not None:
-        mstack.append(mv)
-    return mp, mstack
+    while(len(workers) > 0):
+        w = workers.pop()
+        steps = w[0]
+        mp = 0
+        mv = None
+        mstack = []
+        for valve in valvesLeft:
+            ns = steps - valveDict[w[1]].stepsToNevs[valve] - 1
+            if ns <= 0:
+                continue
+            vl = valvesLeft.copy()
+            vl.remove(valve)
+            nv = valveDict[valve]
+            nw = workers.copy()
+            nw.append((ns,valve))
+            a, stack = maxPressure(vl, nw)
+            p = nv.rate * ns + a
+            if p > mp:
+                mp = p
+                mv = valve
+                mstack = stack
+        if mv is not None:
+            mstack.append(mv)
+            return mp, mstack
+    return 0, []
+    
 
 pressureDict = {}
 for i in range(2):#30//4 + 1):
     workers = [(30 - i * 4, 'AA') for _ in range(i+1)]
     pressureDict[i+1] = maxPressure(set(nevs), workers)
     print('{} {}'.format(i+1, pressureDict[i+1]),flush=True)
+
+#print(maxPressure(set(['BA','CA','DA','EA','OA','PA']),[(10,'KA'),(10,'NA')]))
+#print(maxPressure(set(['BA','CA','DA']),[(3,'EA'),(6,'PA')]))
