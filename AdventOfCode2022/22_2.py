@@ -1,5 +1,5 @@
 area = []
-with open('C:\\Git\\workbook\\data\\advent_22.txt','r') as f:
+with open('/Users/evgeny/python/workbook/data/advent2022/advent_22.txt','r') as f:
     area = f.readlines()
     cmds = area[-1][:-1]
     area = [x[:-1] for x in area[:-2]]
@@ -100,8 +100,8 @@ for i in range(4):
     faces[i].cd['r'] = -i
 
 faces[4].n = {'t':3,'b':1,'l':2,'r':0}
-faces[4].cd = {'t':1,'b':1,'l':2,'r':0}
-faces[5].n = {'t':3,'b':-1,'l':0,'r':2}
+faces[4].cd = {'t':1,'b':-1,'l':2,'r':0}
+faces[5].n = {'t':3,'b':1,'l':0,'r':2}
 faces[5].cd = {'t':-1,'b':1,'l':0,'r':2}
 
 # r d l u
@@ -112,6 +112,7 @@ coord = {f:0, y:0, x:0}
 
 def move(steps, facing, coord):
     delta = {0:(0,1),1:(1,0),2:(0,-1),3:(-1,0)}
+    fc = facing
     for _ in range(steps):
         nc = {f:coord[f], y: coord[y] + delta[facing][0], x: coord[x] + delta[facing][1]}
         if nc[y] < 0:
@@ -159,7 +160,7 @@ def move(steps, facing, coord):
             facing = (facing + cd) % 4
             if cd == 0:
                 nc[x] = 0
-            elif cd == 2:
+            elif cd == 2 or cd == -2:
                 nc[x] = cubeSize - 1
                 nc[y] = cubeSize - 1 - nc[y]
             elif cd == -1: # 1 -> 5
@@ -171,7 +172,31 @@ def move(steps, facing, coord):
         if faces[nc[f]].ar[nc[y]][nc[x]] == '#':
             break
         coord = nc
-    return coord, facing
+        fc = facing
+    return coord, fc
+
+#f1 = open('/Users/evgeny/python/workbook/data/advent2022/advent_22_1_score.txt','w')
+
+def calcTrue(coord, facing, step, dir):
+    face = faces[coord[f]]
+    facing = (facing + face.dir) % 4
+    ansCoord = {y:face.coord[y]*cubeSize, x: face.coord[x]*cubeSize}
+    
+    if face.dir == 0:
+        ansCoord[x] += coord[x]
+        ansCoord[y] += coord[y]
+    elif face.dir == 2:
+        ansCoord[x] += cubeSize - 1 - coord[x]
+        ansCoord[y] += cubeSize - 1 - coord[y]
+    elif face.dir == 1:
+        ansCoord[x] += cubeSize - 1 - coord[y]
+        ansCoord[y] += coord[x]
+    else:
+        ansCoord[x] += coord[y]
+        ansCoord[y] += cubeSize - 1 - coord[x]
+    
+    #f1.write('{} {} {}{}\n'.format(facing,[ansCoord[y],ansCoord[x]],step, dir))
+    print(1000 * (ansCoord[y]+1) + 4*(ansCoord[x]+1) + facing)
 
 nr = cmds.find('R')
 nl = cmds.find('L')
@@ -179,6 +204,7 @@ while True:
     if nr < 0 or nl < nr:
         if nl < 0:
             coord, facing = move(int(cmds), facing, coord)
+            calcTrue(coord,facing, int(cmds), None)
             break
         dir = 'L'
         nr -= nl + 1
@@ -190,22 +216,6 @@ while True:
     st, cmds = cmds.split(dir,1)
     coord, facing = move(int(st), facing, coord)
     facing = (facing + cf[dir]) % 4
+    #calcTrue(coord,facing, int(st), dir)
 
-face = faces[coord[f]]
-facing = (facing + face.dir) % 4
-ansCoord = {y:face.coord[y]*cubeSize, x: face.coord[x]*cubeSize}
-
-if face.dir == 0:
-    ansCoord[x] += coord[x]
-    ansCoord[y] += coord[y]
-elif face.dir == 2:
-    ansCoord[x] += cubeSize - 1 - coord[x]
-    ansCoord[y] += cubeSize - 1 - coord[y]
-elif face.dir == 1:
-    ansCoord[x] += cubeSize - 1 - coord[y]
-    ansCoord[y] += coord[x]
-else:
-    ansCoord[x] += coord[y]
-    ansCoord[y] += cubeSize - 1 - coord[x]
-
-print(1000 * (ansCoord[y]+1) + 4*(ansCoord[x]+1) + facing)
+#f1.close()

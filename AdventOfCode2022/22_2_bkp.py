@@ -1,5 +1,5 @@
 area = []
-with open('C:\\Git\\workbook\\data\\advent_22.txt','r') as f:
+with open('/Users/evgeny/python/workbook/data/advent2022/advent_22.txt','r') as f:
     area = f.readlines()
     cmds = area[-1][:-1]
     area = [x[:-1] for x in area[:-2]]
@@ -18,6 +18,7 @@ cf = {'L': -1, 'R': 1}
 coord = [0, area[0].find('.')]
 
 def move(steps, facing, coord):
+    fc = facing
     delta = {0:(0,1),1:(1,0),2:(0,-1),3:(-1,0)}
     for _ in range(steps):
         nc = [coord[i] + delta[facing][i] for i in range(2)]
@@ -84,7 +85,10 @@ def move(steps, facing, coord):
         if area[nc[0]][nc[1]] == '#':
             break
         coord = nc
-    return coord, facing
+        fc = facing
+    return coord, fc
+
+f1 = open('/Users/evgeny/python/workbook/data/advent2022/advent_22_2_score.txt','w')
 
 nr = cmds.find('R')
 nl = cmds.find('L')
@@ -92,6 +96,8 @@ while True:
     if nr < 0 or nl < nr:
         if nl < 0:
             coord, facing = move(int(cmds), facing, coord)
+            f1.write('{} {} {}{}\n'.format(facing,coord,int(cmds),None))
+            #print(1000 * (coord[0]+1) + 4*(coord[1]+1) + facing)
             break
         dir = 'L'
         nr -= nl + 1
@@ -103,5 +109,7 @@ while True:
     st, cmds = cmds.split(dir,1)
     coord, facing = move(int(st), facing, coord)
     facing = (facing + cf[dir]) % 4
+    f1.write('{} {} {}{}\n'.format(facing,coord,int(st),dir))
+    #print(1000 * (coord[0]+1) + 4*(coord[1]+1) + facing)
 
-print(1000 * (coord[0]+1) + 4*(coord[1]+1) + facing)
+f1.close()
