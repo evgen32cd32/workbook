@@ -47,7 +47,7 @@ class Rent:
 
     def evaluation(self):
         now = datetime.datetime.now()
-        print(f'Start {now}')
+        print(f'Start evaluation {now}')
         with Pool() as pool:
             it = 0
             while True:
@@ -73,11 +73,11 @@ class Rent:
                 print(f'{it} {nt-now} {delta}')
                 now = nt
                 if delta < self.theta:
-                    break
+                    return it > 1
     
     def improvement(self):
         now = datetime.datetime.now()
-        print(f'Start {now}')
+        print(f'Start improvement {now}')
         with Pool() as pool:
             data_input = []
             di = []
@@ -125,8 +125,7 @@ class Rent:
 
 if __name__ == '__main__':
     task = Rent()
-    task.evaluation()
-    while(task.improvement()):
-        task.evaluation()
+    while(task.evaluation() and task.improvement()):
+        pass
     print(task.pie)
     print(task.v)
