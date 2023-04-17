@@ -83,7 +83,7 @@ class Rent:
             di = []
             for pk1 in range(21):
                 for pk2 in range(21):
-                    for pie in range(-5,7):
+                    for pie in range(max(-5,-pk2),min(7,pk1+1)):
                         park1 = int(pk1 - pie)
                         park2 = int(pk2 + pie)
                         if park1 < 0 or park2 < 0:
@@ -96,7 +96,7 @@ class Rent:
                             r_move = (pie - 1) * self.move
                         else:
                             r_move = - pie * self.move
-                        di.append((park1,park2,pie))
+                        di.append((pk1,pk2,pie))
                         data_input.append((park1, park2, r_move, self.p, self.exp_rent, self.rent, self.exp_ret, self.gamma, self.v, self.park_fee))
             v_new = pool.starmap(Rent._ev_mp, data_input)
             pk1, pk2, pie_max = di[0]
