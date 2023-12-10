@@ -67,13 +67,13 @@ print(i)
 
 cur = (ist,jst)
 if i > 0 and mp[cur[0]-1][cur[1]] == 1:
-    nxt = (ist-1,jst)
+    cur = (ist-1,jst)
     direction = 'u'
 elif j > 0 and mp[cur[0]][cur[1]-1] == 1:
-    nxt = (ist,jst-1)
+    cur = (ist,jst-1)
     direction = 'l'
 else:
-    nxt = (ist+1,jst)
+    cur = (ist+1,jst)
     direction = 'd'
 
 guessed = True
@@ -86,6 +86,20 @@ while True:
                 mp[ar[-1][0]][ar[-1][1]] = 0
         else:
             guessed = False
+        if pipes[cur[0]][cur[1]] == '|':
+            cur = (cur[0]-1,cur[1])
+        elif pipes[cur[0]][cur[1]] == 'F':
+            cur = (cur[0],cur[1]+1)
+            direction = 'r'
+        elif pipes[cur[0]][cur[1]] == '7':
+            if cur[0] > 0: 
+                if mp[cur[0]-1][cur[1]] == -1:
+                    ar.append((cur[0]-1,cur[1]))
+                    mp[ar[-1][0]][ar[-1][1]] = 0
+            else:
+                guessed = False
+            cur = (cur[0],cur[1]-1)
+            direction = 'l'
     elif direction == 'd': 
         if cur[1] > 0:
             if mp[cur[0]][cur[1]-1] == -1:
@@ -93,6 +107,20 @@ while True:
                 mp[ar[-1][0]][ar[-1][1]] = 0
         else:
             guessed = False
+        if pipes[cur[0]][cur[1]] == '|':
+            cur = (cur[0]+1,cur[1])
+        elif pipes[cur[0]][cur[1]] == 'L':
+            if cur[0] < len(mp)-1:
+                if mp[cur[0]+1][cur[1]] == -1:
+                    ar.append((cur[0]+1,cur[1]))
+                    mp[ar[-1][0]][ar[-1][1]] = 0
+            else:
+                guessed = False
+            cur = (cur[0],cur[1]+1)
+            direction = 'r'
+        elif pipes[cur[0]][cur[1]] == 'J':
+            cur = (cur[0],cur[1]-1)
+            direction = 'l'
     elif direction == 'r':
         if cur[0] < len(mp)-1:
             if mp[cur[0]+1][cur[1]] == -1:
@@ -100,6 +128,20 @@ while True:
                 mp[ar[-1][0]][ar[-1][1]] = 0
         else:
             guessed = False
+        if pipes[cur[0]][cur[1]] == '-':
+            cur = (cur[0],cur[1]+1)
+        elif pipes[cur[0]][cur[1]] == 'J':
+            if cur[1] < len(mp[0])-1: 
+                if mp[cur[0]][cur[1]+1] == -1:
+                    ar.append((cur[0],cur[1]+1))
+                    mp[ar[-1][0]][ar[-1][1]] = 0
+            else:
+                guessed = False
+            cur = (cur[0]-1,cur[1])
+            direction = 'u'
+        elif pipes[cur[0]][cur[1]] == '7':
+            cur = (cur[0]+1,cur[1])
+            direction = 'd'
     elif direction == 'l':
         if cur[0] > 0: 
             if mp[cur[0]-1][cur[1]] == -1:
@@ -107,43 +149,21 @@ while True:
                 mp[ar[-1][0]][ar[-1][1]] = 0
         else:
             guessed = False
-    cur = nxt
-    if direction == 'u':
-        if pipes[cur[0]][cur[1]] == '|':
-            nxt = (cur[0]-1,cur[1])
-        if pipes[cur[0]][cur[1]] == 'F':
-            nxt = (cur[0],cur[1]+1)
-            direction = 'r'
-        if pipes[cur[0]][cur[1]] == '7':
-            nxt = (cur[0],cur[1]-1)
-            direction = 'l'
-    elif direction == 'd':
-        if pipes[cur[0]][cur[1]] == '|':
-            nxt = (cur[0]+1,cur[1])
-        if pipes[cur[0]][cur[1]] == 'L':
-            nxt = (cur[0],cur[1]+1)
-            direction = 'r'
-        if pipes[cur[0]][cur[1]] == 'J':
-            nxt = (cur[0],cur[1]-1)
-            direction = 'l'
-    elif direction == 'l':
         if pipes[cur[0]][cur[1]] == '-':
-            nxt = (cur[0],cur[1]-1)
-        if pipes[cur[0]][cur[1]] == 'L':
-            nxt = (cur[0]-1,cur[1])
+            cur = (cur[0],cur[1]-1)
+        elif pipes[cur[0]][cur[1]] == 'L':
+            cur = (cur[0]-1,cur[1])
             direction = 'u'
-        if pipes[cur[0]][cur[1]] == 'F':
-            nxt = (cur[0]+1,cur[1])
+        elif pipes[cur[0]][cur[1]] == 'F':
+            if cur[1] > 0:
+                if mp[cur[0]][cur[1]-1] == -1:
+                    ar.append((cur[0],cur[1]-1))
+                    mp[ar[-1][0]][ar[-1][1]] = 0
+            else:
+                guessed = False
+            cur = (cur[0]+1,cur[1])
             direction = 'd'
-    elif direction == 'r':
-        if pipes[cur[0]][cur[1]] == '-':
-            nxt = (cur[0],cur[1]+1)
-        if pipes[cur[0]][cur[1]] == 'J':
-            nxt = (cur[0]-1,cur[1])
-            direction = 'u'
-        if pipes[cur[0]][cur[1]] == '7':
-            nxt = (cur[0]+1,cur[1])
-            direction = 'd'
+
     if mp[cur[0]][cur[1]] == 0:
         break
 
@@ -167,13 +187,36 @@ while len(ar) > 0:
 sq = -sum([x for line in mp for x in line if x == -1])
 if guessed:
     sq = len(mp)*len(mp[0])-sq-pipelength
+
+# second answer
 print(sq)
-print(len(mp)*len(mp[0])-sq-pipelength)
+#print(len(mp)*len(mp[0])-sq-pipelength)
 
-print(guessed)
+#print(guessed)
 
-
-#for x in mp:
+#pretty = []
+#for i in range(len(mp)):
+#    a = ''
+#    for j in range(len(mp[0])):
+#        if mp[i][j] == 0:
+#            a += '.'
+#        elif mp[i][j] == -1:
+#            a+='x'
+#        elif pipes[i][j] == '-':
+#            a+='═'
+#        elif pipes[i][j] == '|':
+#            a+='║'
+#        elif pipes[i][j] == 'F':
+#            a+='╔'
+#        elif pipes[i][j] == '7':
+#            a+='╗'
+#        elif pipes[i][j] == 'L':
+#            a+='╚'
+#        elif pipes[i][j] == 'J':
+#            a+='╝'
+#    pretty.append(a)
+#
+#for x in pretty:
 #    print(x)
 
 
