@@ -82,7 +82,7 @@ def checker(cur, x):
                 mlp = 1
                 for cnt in cnts:
                     mlp *= cnt
-                ans += (mlp*sum([a0+a1 for a0,a1 in vs]))//2
+                ans += mlp
             elif nxt != 'R':
                 ans += checker(nxt,nx)
         if oldi is None:
