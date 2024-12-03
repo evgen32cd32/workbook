@@ -1,4 +1,5 @@
 from collections import deque
+from math import lcm
 
 deq = deque()
 
@@ -27,6 +28,7 @@ class Conjunction:
         #print(f'{source} -{high}> {self.name}')
         self.ar[source] = high
         deq.extend([(ch, not all(self.ar.values()), self.name) for ch in self.children])
+        return (self.name, not all(self.ar.values()))
 
 class Broadcast:
     def __init__(self, name='broadcaster'):
@@ -81,21 +83,38 @@ with open('/Users/evgen/projects/workbook/data/advent2023/advent_20.txt','r') as
                     d[x][0].ar[k] = False
             else:
                 v[0].children.append(Dummy(x))
+    cons = [v[0].name for v in d.values() if v[0].type == 'con']
+    cons1 = ['nl', 'cr', 'jx', 'vj']
     button = Button()
     button.broadcast = d['broadcaster'][0]
     counter = {True:0,False:0}
-    for _ in range(1000):
+    ans1 = None
+    table = {c:[] for c in cons1}
+    for i in range(10000):
+        j = 0
         deq.append((button,None, None))
         while len(deq) > 0:
             mod, high, source = deq.popleft()
             if high is not None:
                 counter[high] += 1
             #print(counter[True],counter[False])
-            mod.signal(high, source)
-        #print(counter[True],counter[False])
+            out = mod.signal(high, source)
+            if out is not None:
+                if out[0] in table and not out[1]:
+                    table[out[0]].append(i)
+        if i == 999:
+            ans1 = counter[True]*counter[False]
+
+#for k, v in table.items():
+#    print(f'{k} {v}')
+#
+#print('\n')
+#
+#for k, v in table.items():
+#    print(f'{k} {[v[i] - v[i-1]for i in range(1,len(v))]}')
         
 # first answer
-print(counter[True]*counter[False])
+print(ans1)
 
 # second answer
-#print(task(4,10))
+print(lcm(*[v[1] - v[0] for v in table.values()]))
