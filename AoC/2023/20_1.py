@@ -81,7 +81,6 @@ with open('/Users/evgen/projects/workbook/data/advent2023/advent_20.txt','r') as
                     d[x][0].ar[k] = False
             else:
                 v[0].children.append(Dummy(x))
-        v[0].children = [Dummy(x) if x not in d else d[x][0] for x in v[1]]
     button = Button()
     button.broadcast = d['broadcaster'][0]
     counter = {True:0,False:0}
