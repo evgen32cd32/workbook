@@ -26,7 +26,7 @@ def foo(add,maxpress):
                     if x[0]/c[0] < x[1]/c[1]:
                         li = 0
                         hi = 1
-                    for a in range(min(inf,X//x[li]),-1,-1):
+                    for a in range(min(maxpress,X//x[li]),-1,-1):
                         b = (X - a*x[li])//x[hi]
                         if (X - a*x[li])%x[hi] == 0:
                             ans += c[li]*a + c[hi]*b
