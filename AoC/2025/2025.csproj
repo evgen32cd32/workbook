@@ -6,7 +6,7 @@
     <RootNamespace>_2025</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>AoC05</StartupObject>
+    <StartupObject>AoC06</StartupObject>
   </PropertyGroup>
 
 </Project>
